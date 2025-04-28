@@ -1,7 +1,72 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ArrowRight, Clock, CheckCircle, Shield } from 'lucide-react';
+import emailjs from 'emailjs-com';
 
 const CTASection: React.FC = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    printerModel: '',
+    issue: '',
+    urgency: ''
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  // Handle form data changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  // Handle radio button changes for urgency
+  const handleUrgencyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      urgency: e.target.value,
+    }));
+  };
+
+  // Send the email using EmailJS
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    const templateParams = {
+      name: formData.name,
+      phone: formData.phone,
+      email: formData.email,
+      printer: formData.printerModel,
+      issue: formData.issue,
+      urgency: formData.urgency,
+      time: new Date().toLocaleString(),
+    };
+
+    emailjs
+      .send('service_5480owf', 'template_zkrr28w', templateParams, 'GOWYWWDuIAR64j_gu')
+      .then(
+        (response) => {
+          console.log('Email sent successfully:', response.text);
+          setSuccessMessage('Your request has been sent successfully! Our expert will get back to you shortly.');
+          setErrorMessage('');
+        },
+        (error) => {
+          console.error('Error sending email:', error);
+          setErrorMessage('There was an issue sending your request. Please try again.');
+          setSuccessMessage('');
+        }
+      )
+      .finally(() => {
+        setIsSubmitting(false);
+      });
+  };
+
   return (
     <section id="contact" className="py-16 bg-blue-600">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -41,7 +106,7 @@ const CTASection: React.FC = () => {
             
             <div className="bg-white/10 p-4 rounded-lg inline-block">
               <p className="text-white">
-                <span className="font-bold">24/7 Support Hotline:</span> <a href="tel:1-800-PRINTER" className="underline hover:text-blue-200">1-800-PRINTER</a>
+                <span className="font-bold">24/7 Support Hotline:</span> <a href="tel:1-800-PRINTER" className="underline hover:text-blue-200">1-798-223-4691</a>
               </p>
             </div>
           </div>
@@ -50,43 +115,68 @@ const CTASection: React.FC = () => {
             <div className="bg-white p-6 sm:p-8 rounded-xl shadow-xl">
               <h3 className="text-2xl font-bold text-gray-900 mb-6">Get Support Now</h3>
               
-              <div className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label htmlFor="name-cta" className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
                   <input
                     type="text"
-                    id="name-cta"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                     placeholder="John Smith"
                   />
                 </div>
                 
                 <div>
-                  <label htmlFor="phone-cta" className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
                   <input
                     type="tel"
-                    id="phone-cta"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                     placeholder="(123) 456-7890"
                   />
                 </div>
                 
                 <div>
-                  <label htmlFor="email-cta" className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
                   <input
                     type="email"
-                    id="email-cta"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                     placeholder="john@example.com"
                   />
                 </div>
+
+                <div>
+                  <label htmlFor="printerModel" className="block text-sm font-medium text-gray-700 mb-1">Printer Model</label>
+                  <input
+                    type="text"
+                    id="printerModel"
+                    name="printerModel"
+                    value={formData.printerModel}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="LaserPro L900"
+                  />
+                </div>
                 
                 <div>
-                  <label htmlFor="issue-cta" className="block text-sm font-medium text-gray-700 mb-1">Describe Your Printer Issue</label>
+                  <label htmlFor="issue" className="block text-sm font-medium text-gray-700 mb-1">Describe Your Printer Issue</label>
                   <textarea
-                    id="issue-cta"
+                    id="issue"
+                    name="issue"
+                    value={formData.issue}
+                    onChange={handleChange}
                     rows={3}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-4 py-0 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Please briefly describe what's happening with your printer..."
                   ></textarea>
                 </div>
@@ -99,6 +189,8 @@ const CTASection: React.FC = () => {
                         type="radio"
                         name="urgency"
                         value="urgent"
+                        checked={formData.urgency === 'urgent'}
+                        onChange={handleUrgencyChange}
                         className="h-4 w-4 text-blue-600 focus:ring-blue-500"
                       />
                       <span className="ml-2 text-sm text-gray-700">Urgent (ASAP)</span>
@@ -108,6 +200,8 @@ const CTASection: React.FC = () => {
                         type="radio"
                         name="urgency"
                         value="today"
+                        checked={formData.urgency === 'today'}
+                        onChange={handleUrgencyChange}
                         className="h-4 w-4 text-blue-600 focus:ring-blue-500"
                       />
                       <span className="ml-2 text-sm text-gray-700">Today</span>
@@ -117,6 +211,8 @@ const CTASection: React.FC = () => {
                         type="radio"
                         name="urgency"
                         value="anytime"
+                        checked={formData.urgency === 'anytime'}
+                        onChange={handleUrgencyChange}
                         className="h-4 w-4 text-blue-600 focus:ring-blue-500"
                       />
                       <span className="ml-2 text-sm text-gray-700">Anytime</span>
@@ -127,14 +223,18 @@ const CTASection: React.FC = () => {
                 <button
                   type="submit"
                   className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm transition-all transform hover:scale-105 flex items-center justify-center"
+                  disabled={isSubmitting}
                 >
-                  Get Expert Help Now <ArrowRight className="ml-2 h-5 w-5" />
+                  {isSubmitting ? 'Sending...' : 'Get Expert Help Now'}
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </button>
                 
-                <p className="text-xs text-gray-500 text-center mt-2">
-                  Our average response time is under 5 minutes
+                {successMessage && <p className="text-green-500 text-center mt-2">{successMessage}</p>}
+                {errorMessage && <p className="text-red-500 text-center mt-2">{errorMessage}</p>}
+                <p className="text-xs text-gray-600 text-center mt-2">
+                  Our average response time is under 1 minute
                 </p>
-              </div>
+              </form>
             </div>
           </div>
         </div>

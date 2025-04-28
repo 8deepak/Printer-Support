@@ -62,14 +62,14 @@ const Footer: React.FC = () => {
                 <Phone className="h-5 w-5 text-blue-400 mr-3 mt-0.5" />
                 <div>
                   <p className="font-medium">Support Hotline</p>
-                  <a href="tel:1-800-PRINTER" className="text-gray-400 hover:text-blue-400 transition-colors">1-800-PRINTER</a>
+                  <a href=" " className="text-gray-400 hover:text-blue-400 transition-colors">1-798-223-4691</a>
                 </div>
               </li>
               <li className="flex items-start">
                 <Mail className="h-5 w-5 text-blue-400 mr-3 mt-0.5" />
                 <div>
                   <p className="font-medium">Email</p>
-                  <a href="mailto:support@printercare.com" className="text-gray-400 hover:text-blue-400 transition-colors">support@printercare.com</a>
+                  <a href="mailto:support@printercare.com" className="text-gray-400 hover:text-blue-400 transition-colors">support@printercare.tech</a>
                 </div>
               </li>
               <li className="flex items-start">
